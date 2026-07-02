@@ -18,8 +18,10 @@ def load_lab_env() -> None:
 
 
 def require_api_key() -> None:
-    """Raise sớm nếu thiếu API key (tránh lỗi khó hiểu lúc gọi Gemini)."""
+    """Raise sớm nếu thiếu API key (tránh lỗi khó hiểu lúc gọi model)."""
     load_lab_env()
+    if os.getenv("GROQ_API_KEY"):
+        return  # dùng Groq qua LiteLLM — không cần GOOGLE_API_KEY
     if not os.getenv("GOOGLE_API_KEY"):
         raise RuntimeError(
             f"Thiếu GOOGLE_API_KEY. Đặt trong {ENV_FILE} — "

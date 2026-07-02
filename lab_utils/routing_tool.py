@@ -8,7 +8,7 @@ _DEFAULT_AGENTS = [
     AgentCapability(
         name="search_agent",
         description="Tìm kiếm web tài liệu nghiên cứu bằng chứng",
-        tags=["search", "web", "documents"],
+        tags=["search", "web", "documents", "tìm kiếm", "bài viết", "tra cứu"],
     ),
     AgentCapability(
         name="database_agent",

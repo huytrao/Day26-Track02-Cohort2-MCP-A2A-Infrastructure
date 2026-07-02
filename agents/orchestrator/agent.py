@@ -17,6 +17,7 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from lab_utils.env_setup import load_lab_env, require_api_key
+from lab_utils.model_config import get_lab_model
 
 load_lab_env()
 require_api_key()
@@ -87,6 +88,11 @@ mcp_env = {
     "GOVERNANCE_TASK_ID": "orchestrator-session",
 }
 
+# errlog: file thật thay vì sys.stderr — trong Jupyter/Windows sys.stderr
+# không có fileno() nên spawn MCP subprocess sẽ lỗi "fileno"
+_MCP_ERRLOG_PATH = PROJECT_ROOT / "logs" / "mcp_stderr.log"
+_MCP_ERRLOG_PATH.parent.mkdir(exist_ok=True)
+
 mcp_tools = McpToolset(
     connection_params=StdioConnectionParams(
         server_params=StdioServerParameters(
@@ -97,11 +103,12 @@ mcp_tools = McpToolset(
         timeout=10,
     ),
     tool_filter=_allowed_mcp_tools,
+    errlog=open(_MCP_ERRLOG_PATH, "a", encoding="utf-8"),
 )
 
 root_agent = Agent(
     name="orchestrator",
-    model="gemini-2.5-flash",
+    model=get_lab_model(),
     description="Điều phối nghiên cứu bằng cách ủy quyền cho search, database và synthesis specialist.",
     generate_content_config=types.GenerateContentConfig(
         thinking_config=types.ThinkingConfig(thinking_budget=0),

@@ -12,7 +12,8 @@ from dataclasses import dataclass
 
 
 def _tokenize(text: str) -> dict[str, float]:
-    tokens = re.findall(r"[a-z0-9]+", text.lower())
+    # [a-z0-9à-ỹ] — giữ nguyên chữ tiếng Việt có dấu, tránh băm vụn token
+    tokens = re.findall(r"[a-z0-9à-ỹ]+", text.lower())
     counts: dict[str, float] = {}
     for token in tokens:
         counts[token] = counts.get(token, 0.0) + 1.0
